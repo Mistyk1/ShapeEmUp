@@ -1,4 +1,5 @@
 import Connection from '../../Connection.js';
+import { Renderer } from '../rendering/Renderer.js';
 import { Router } from './Router.js';
 import { View } from './View.js';
 
@@ -9,6 +10,7 @@ export class MainGameView extends View {
 
 	static initConnectionToEndScreen() {
 		Connection.socket.on('game-end', scores => {
+			Renderer.stop_rendering();
 			const score = scores
 				.filter(score => score.name == sessionStorage.getItem('nickname'))
 				.map(score => score.pts);

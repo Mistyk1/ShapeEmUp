@@ -42,7 +42,7 @@ const avatarsAssociation = {
 
 export const io = new IOServer(httpServer);
 io.on('connection', socket => {
-	if (players.length == maxPlayers) {
+	if (players.length == maxPlayers || gameArea.gameStarted) {
 		socket.disconnect();
 		return;
 	}

@@ -5,6 +5,7 @@ import { avatarsList, bulletsList, monsters, weapons } from './textures.js';
 export class Renderer {
 	static #entities;
 	static time;
+	static playersScore = [];
 	static canvas;
 	static context;
 	static #reqAnim;
@@ -28,6 +29,7 @@ export class Renderer {
 		this.clear();
 		this.#renderEntities();
 		this.#renderTime();
+		this.#renderPlayersScore();
 		this.#reqAnim = requestAnimationFrame(this.start_rendering.bind(this));
 	}
 
@@ -100,9 +102,19 @@ export class Renderer {
 		const sec = Math.floor(this.time) % 60;
 		this.context.fillText(
 			`${Math.floor(Math.floor(this.time) / 60)}:${sec < 10 ? `0${sec}` : sec}`,
-			500,
+			50,
 			100
 		);
+	}
+
+	static #renderPlayersScore() {
+		this.context.font = '30px Arial';
+		this.context.fillStyle = 'white';
+		let txt = ``;
+		this.playersScore.forEach(player => {
+			txt += `${player.name}: ${player.pts} `;
+		});
+		this.context.fillText(txt, 50, 50);
 	}
 
 	static initConnectionToRenderer() {
@@ -133,6 +145,12 @@ export class Renderer {
 		});
 		Connection.socket.on('getTime-from-server', time => {
 			this.time = time;
+		});
+		Connection.socket.on('getPlayersScore-from-server', scoreTab => {
+			this.playersScore = [];
+			scoreTab.forEach(score => {
+				this.playersScore.push(score);
+			});
 		});
 	}
 }

@@ -9,6 +9,7 @@ class GameArea {
 	entities = [];
 	delta = 16 / 1000;
 	friction = 400;
+	gameStarted = false;
 	#main_loop;
 
 	add_entity(entity) {
@@ -25,11 +26,13 @@ class GameArea {
 			this.delta * 1000
 		);
 		this.time = 0;
+		this.gameStarted = true;
 		console.log('loop started');
 	}
 
 	end() {
 		this.stop_loop();
+		this.gameStarted = false;
 		fs.readFile('server/datas/scores.json', 'utf8', (err, data) => {
 			if (err) {
 				console.log(err);
@@ -58,6 +61,7 @@ class GameArea {
 		if (this.io != undefined) {
 			this.send_entitiesDatas();
 			this.send_current_time();
+			this.send_players_score();
 		}
 	}
 
@@ -76,7 +80,7 @@ class GameArea {
 
 	add_score(name, value) {
 		this.scoreTab
-			.filter(score => (score.name = name))
+			.filter(score => score.name == name)
 			.map(score => (score.pts += value * this.difficulty));
 	}
 
@@ -102,6 +106,10 @@ class GameArea {
 
 	send_current_time() {
 		this.io.emit('getTime-from-server', this.time);
+	}
+
+	send_players_score() {
+		this.io.emit('getPlayersScore-from-server', this.scoreTab);
 	}
 }
 
