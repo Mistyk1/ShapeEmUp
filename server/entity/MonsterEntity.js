@@ -8,12 +8,14 @@ export class MonsterEntity extends LivingEntity {
 		super(datas);
 		this.type = 'monster';
 		this.playerAggro = pl;
-		this.knockback_speed = 50;
+		this.knockback_speed = 20;
 		this.hitbox.addLayer('monster');
 		this.hitbox.addMask(
 			'player',
 			new Action('hurtplayer', (source, target) => {
-				target.hurt(1);
+				if (target.hurt(1)) {
+					this.target_new_player();
+				}
 				target.knockback = source.pos
 					.to(target.pos)
 					.normalize()
@@ -29,12 +31,9 @@ export class MonsterEntity extends LivingEntity {
 	}
 
 	move() {
-		if (this.playerAggro == undefined) {
+		if (this.playerAggro.HP <= 0) {
 			if (gameArea.no_players_left()) return;
-			this.playerAggro =
-				gameArea.get_players()[
-					Math.floor(Math.random() * gameArea.get_players().length)
-				];
+			this.target_new_player();
 		}
 		const direction = this.pos
 			.to(this.playerAggro.pos)
@@ -46,5 +45,12 @@ export class MonsterEntity extends LivingEntity {
 	die() {
 		super.die();
 		SpawnerEntity.monsterNb -= 1;
+	}
+
+	target_new_player() {
+		this.playerAggro =
+			gameArea.get_players()[
+				Math.floor(Math.random() * gameArea.get_players().length)
+			];
 	}
 }
