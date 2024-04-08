@@ -131,14 +131,22 @@ Array.prototype.removeIf = function (callback) {
 function init() {
 	console.log('initializing game ...');
 	gameArea.entities.length = 0;
-	const spawnerDatas = {
-		pos: new Vector2(500, 900),
-	};
-	gameArea.add_entity(new WeaponEntity(750, 450, weaponList.gun));
-	gameArea.add_entity(new WeaponEntity(650, 450, weaponList.bigGun));
-	gameArea.add_entity(new WeaponEntity(550, 450, weaponList.laser));
-	gameArea.add_entity(new WeaponEntity(450, 450, weaponList.zone));
-	gameArea.add_entity(new SpawnerEntity(spawnerDatas));
+	const spawnerDatas1 = {
+			pos: new Vector2(-50, -50),
+		},
+		spawnerDatas2 = {
+			pos: new Vector2(gameArea.maxSize.x + 50, gameArea.maxSize.y + 50),
+		},
+		spawnerDatas3 = {
+			pos: new Vector2(-50, gameArea.maxSize.y + 50),
+		},
+		spawnerDatas4 = {
+			pos: new Vector2(gameArea.maxSize.x + 50, -50),
+		};
+	gameArea.add_entity(new SpawnerEntity(spawnerDatas1));
+	gameArea.add_entity(new SpawnerEntity(spawnerDatas2));
+	gameArea.add_entity(new SpawnerEntity(spawnerDatas3));
+	gameArea.add_entity(new SpawnerEntity(spawnerDatas4));
 	players.forEach(socket => {
 		const player = new PlayerEntity(
 			{

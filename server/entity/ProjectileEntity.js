@@ -2,6 +2,8 @@ import { DynamicEntity } from './DynamicEntity.js';
 import gameArea from '../GameArea.js';
 import { Action } from './action/Action.js';
 import { Vector2 } from '../math/Vector2.js';
+import { randomWeapon, weaponList } from '../weapons/WeaponList.js';
+import { WeaponEntity } from './WeaponEntity.js';
 
 export class ProjectileEntity extends DynamicEntity {
 	memory = new Map();
@@ -30,6 +32,11 @@ export class ProjectileEntity extends DynamicEntity {
 
 					if (target.hurt(source.damage)) {
 						gameArea.add_score(source.owner.name, 5);
+						if (Math.random() * 100 < 5) {
+							gameArea.add_entity(
+								new WeaponEntity(target.pos.x, target.pos.y, randomWeapon())
+							);
+						}
 					}
 					if (source.penetration < 0) return;
 					if (source.penetration > 0) {

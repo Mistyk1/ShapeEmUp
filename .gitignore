@@ -5,3 +5,4 @@ webpack.config.js
 .vscode/
 build/
 node_modules/
+server/datas/scores.json

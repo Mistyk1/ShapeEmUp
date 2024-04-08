@@ -20,7 +20,7 @@ export class SpawnerEntity extends Entity {
 		this.spawnCooldown -= 1;
 		if (this.spawnCooldown <= 0) {
 			this.spawn_monster();
-			this.spawnCooldown = 500;
+			this.spawnCooldown = 100 + Math.random() * 400;
 		}
 	}
 

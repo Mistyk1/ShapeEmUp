@@ -61,6 +61,10 @@ export class PlayerEntity extends LivingEntity {
 			})
 		);
 
+		const weapon = new Weapon(weaponList.gun);
+		weapon.bullet.owner = this;
+		this.weapons.active1 = weapon;
+
 		this.socket = socket;
 		if (this.socket != undefined) {
 			this.socket.on('disconnect', () => {

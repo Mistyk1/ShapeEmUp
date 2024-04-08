@@ -96,9 +96,9 @@ class GameArea {
 				angle: entity.angle,
 				name: entity.name,
 				type: entity.type,
-				owner: entity.owner.name,
 				maxHP: entity.maxHP,
 				HP: entity.HP,
+				owner: entity.owner.name,
 			};
 		});
 		this.io.emit('update-entities', datas);

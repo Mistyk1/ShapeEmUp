@@ -38,11 +38,11 @@ export const weaponList = {
 		type: weaponType.passive,
 		cooldown: 0,
 		bullet: {
-			radius: 125,
+			radius: 250,
 			speedMult: -1,
 			friendly: true,
 			damage: 0.25,
-			knockback_speed: 10,
+			knockback_speed: 7.5,
 			penetration: -1,
 			ttl: -1,
 			renderTexture: false,
@@ -67,3 +67,11 @@ export const weaponList = {
 		texture: 'laser',
 	},
 };
+
+export function randomWeapon() {
+	const weapon =
+		Object.values(weaponList)[
+			Math.floor(1 + Math.random() * Object.values(weaponList).length - 1)
+		];
+	return weapon;
+}
