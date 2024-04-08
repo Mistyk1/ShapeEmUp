@@ -2,16 +2,13 @@ import { Entity } from './Entity.js';
 import gameArea from '../GameArea.js';
 
 export class WeaponEntity extends Entity {
-	static monsterNb = 0;
-	static maxMonster = 25;
-
 	constructor(x, y, weapon) {
 		super({
 			pos: { x: x, y: y },
 			radius: 20,
 		});
 		this.type = 'weapon';
-		this.weapon = weapon;
+		this.weapon = Object.assign({}, weapon);
 		this.hitbox.addLayer('weapon');
 		this.name = weapon.texture;
 		this.ttl = 500;

@@ -5,13 +5,14 @@ import { Action } from './action/Action.js';
 import { weaponType } from '../weapons/WeaponType.js';
 import { weaponList } from '../weapons/WeaponList.js';
 import { Weapon } from '../weapons/Weapon.js';
+import { WeaponEntity } from './WeaponEntity.js';
 
 export class PlayerEntity extends LivingEntity {
 	direction = new Vector2(0, 0);
 	shootDirection = new Vector2(0, 0);
 	cursorPosition = new Vector2(0, 0);
 	move_vector = new Vector2(0, 0);
-	player_speed = 25;
+	player_speed = 20;
 	cooldown = 0;
 	weapons = {
 		active1: weaponList.null,
@@ -32,12 +33,10 @@ export class PlayerEntity extends LivingEntity {
 				if (target.weapon.type == weaponType.active) {
 					console.log('pick up active');
 					if (source.weapons.active1 == weaponList.null) {
-						target.weapon.owner = source;
-						source.weapons.active1 = new Weapon(target.weapon);
+						source.weapons.active1 = new Weapon(target.weapon, source);
 						target.die();
 					} else if (source.weapons.active2 == weaponList.null) {
-						target.weapon.owner = source;
-						source.weapons.active2 = new Weapon(target.weapon);
+						source.weapons.active2 = new Weapon(target.weapon, source);
 						target.die();
 					}
 				} else if (
@@ -45,8 +44,7 @@ export class PlayerEntity extends LivingEntity {
 					target.weapon.type == weaponType.passive
 				) {
 					console.log('pick up passive');
-					target.weapon.owner = source;
-					source.weapons.passive = new Weapon(target.weapon);
+					source.weapons.passive = new Weapon(target.weapon, source);
 					target.die();
 					source.shoot_passive();
 				} else if (
@@ -54,16 +52,30 @@ export class PlayerEntity extends LivingEntity {
 					target.weapon.type == weaponType.ultimate
 				) {
 					console.log('pick up ultimate');
-					target.weapon.owner = source;
-					source.weapons.ultimate = new Weapon(target.weapon);
+					source.weapons.ultimate = new Weapon(target.weapon, source);
 					target.die();
 				}
 			})
 		);
 
-		const weapon = new Weapon(weaponList.gun);
-		weapon.bullet.owner = this;
-		this.weapons.active1 = weapon;
+		this.weapons.active1 = new Weapon(
+			{
+				type: weaponList.gun.type,
+				cooldown: weaponList.gun.cooldown,
+				bullet: {
+					radius: weaponList.gun.bullet.radius,
+					speedMult: weaponList.gun.bullet.speedMult,
+					friendly: true,
+					damage: weaponList.gun.bullet.damage,
+					knockback_speed: weaponList.gun.bullet.knockback_speed,
+					penetration: weaponList.gun.bullet.penetration,
+					ttl: weaponList.gun.bullet.ttl,
+					texture: weaponList.gun.bullet.texture,
+				},
+				texture: weaponList.gun.texture,
+			},
+			this
+		);
 
 		this.socket = socket;
 		if (this.socket != undefined) {
@@ -175,5 +187,14 @@ export class PlayerEntity extends LivingEntity {
 				gameArea.add_entity(bullet);
 			}
 		}
+	}
+
+	die() {
+		super.die();
+		gameArea.entities.forEach((entity, index) => {
+			if (entity.owner.name == this.name) {
+				entity.die();
+			}
+		});
 	}
 }

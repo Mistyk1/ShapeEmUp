@@ -5,6 +5,7 @@ import { randInt } from '../math/MathUtils.js';
 
 export class SpawnerEntity extends Entity {
 	nbMonsterPerSpawn = 4;
+
 	constructor(datas) {
 		super(datas);
 		this.radius = 5;
@@ -21,6 +22,7 @@ export class SpawnerEntity extends Entity {
 		if (this.spawnCooldown <= 0) {
 			this.spawn_monster();
 			this.spawnCooldown = 100 + Math.random() * 400;
+			this.nbMonsterPerSpawn = Math.floor(Math.random() * 2) + 2;
 		}
 	}
 

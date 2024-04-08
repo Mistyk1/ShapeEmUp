@@ -32,7 +32,7 @@ export class ProjectileEntity extends DynamicEntity {
 
 					if (target.hurt(source.damage)) {
 						gameArea.add_score(source.owner.name, 5);
-						if (Math.random() * 100 < 5) {
+						if (Math.random() * 100 < 3) {
 							gameArea.add_entity(
 								new WeaponEntity(target.pos.x, target.pos.y, randomWeapon())
 							);
