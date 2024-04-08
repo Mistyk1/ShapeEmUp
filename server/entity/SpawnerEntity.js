@@ -22,7 +22,8 @@ export class SpawnerEntity extends Entity {
 		if (this.spawnCooldown <= 0) {
 			this.spawn_monster();
 			this.spawnCooldown = 100 + Math.random() * 400;
-			this.nbMonsterPerSpawn = Math.floor(Math.random() * 2) + 2;
+			this.nbMonsterPerSpawn =
+				Math.floor(Math.random() * 2) + gameArea.difficulty;
 		}
 	}
 

@@ -10,6 +10,7 @@ export class MonsterEntity extends LivingEntity {
 		super(datas);
 		this.id = MonsterEntity.monsterNb;
 		MonsterEntity.monsterNb += 1;
+		this.speedMult = this.speedMult * (gameArea.difficulty / 2);
 		this.type = 'monster';
 		this.playerAggro = pl;
 		this.knockback_speed = 20;
@@ -17,7 +18,7 @@ export class MonsterEntity extends LivingEntity {
 		this.hitbox.addMask(
 			'player',
 			new Action('hurtplayer', (source, target) => {
-				if (target.hurt(1)) {
+				if (target.hurt(gameArea.difficulty)) {
 					this.target_new_player();
 				}
 				target.knockback = source.pos
