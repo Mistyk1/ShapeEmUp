@@ -18,8 +18,10 @@ export class ProjectileEntity extends DynamicEntity {
 		this.hitbox.addMask(
 			'monster',
 			new Action('monsterColision', (source, target) => {
-				if (source.memory[target] == undefined || source.memory[target] <= 0) {
-					console.log('collision');
+				if (
+					source.memory[target.id] == undefined ||
+					source.memory[target.id] <= 0
+				) {
 					if (source.owner != undefined)
 						target.knockback = source.owner.pos
 							.to(target.pos)
@@ -32,7 +34,7 @@ export class ProjectileEntity extends DynamicEntity {
 					if (source.penetration < 0) return;
 					if (source.penetration > 0) {
 						source.penetration -= 1;
-						source.memory[target] = source.cooldown;
+						source.memory[target.id] = source.cooldown;
 						return;
 					}
 					source.die();

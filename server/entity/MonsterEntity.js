@@ -4,8 +4,12 @@ import { SpawnerEntity } from './SpawnerEntity.js';
 import { Action } from './action/Action.js';
 
 export class MonsterEntity extends LivingEntity {
+	static monsterNb = 0;
+
 	constructor(datas, pl) {
 		super(datas);
+		this.id = MonsterEntity.monsterNb;
+		MonsterEntity.monsterNb += 1;
 		this.type = 'monster';
 		this.playerAggro = pl;
 		this.knockback_speed = 20;
