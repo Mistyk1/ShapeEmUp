@@ -50,16 +50,18 @@ export class Renderer {
 						this.context.scale(this.w_ratio, this.h_ratio);
 						Object.values(avatarsList)
 							.filter(avatar => avatar.owner == entity.name)
-							.map(avatar =>
+							.map(avatar => {
+								console.log(entity);
 								avatar.draw(
 									this.context,
 									entity.origin,
 									entity.radius,
 									-entity.angle,
 									entity.maxHP,
-									entity.HP
-								)
-							);
+									entity.HP,
+									entity.stats
+								);
+							});
 						break;
 					case 'bullet':
 						this.context.scale(this.w_ratio, this.h_ratio);
@@ -118,10 +120,6 @@ export class Renderer {
 	}
 
 	static initConnectionToRenderer() {
-		Connection.socket.on('getEntities-from-server', entities => {
-			this.clear();
-			this.#entities = entities;
-		});
 		Connection.socket.on('getGameSize-from-server', gameSize => {
 			const maxWidth = window.innerWidth;
 			const maxHeight = window.innerHeight;

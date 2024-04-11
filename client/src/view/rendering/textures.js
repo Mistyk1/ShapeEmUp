@@ -1,8 +1,26 @@
+function hpDisplay(ctx, radius, maxHP, HP) {
+	const hpDisplayWidth = radius * 2 * 1.5 * (HP / maxHP);
+	if (hpDisplayWidth <= 0) return;
+	ctx.fillRect(-radius * 1.5, radius * 1.5, hpDisplayWidth, radius * 2 * 0.15);
+}
+
+function xpDisplay(ctx, radius, xp, level) {
+	const xpDisplayWidth = radius * 2 * 1.5 * (xp.amount / xp.toLevelUp);
+	if (xpDisplayWidth < 0) return;
+	ctx.fillRect(
+		-radius * 1.5,
+		radius * 1.5 + radius * 2 * 0.15,
+		xpDisplayWidth,
+		radius * 2 * 0.15
+	);
+	ctx.fillText(level, -radius * 2.5, radius * 2 + radius * 2 * 0.15);
+}
+
 export const avatarsList = {
 	square: {
 		color: 'lightblue',
 		owner: null,
-		draw: (ctx, origin, radius, angle, maxHP, HP) => {
+		draw: (ctx, origin, radius, angle, maxHP, HP, stats) => {
 			ctx.fillStyle = avatarsList.square.color;
 			ctx.beginPath();
 
@@ -11,14 +29,8 @@ export const avatarsList = {
 			ctx.fillRect(-radius, -radius, radius * 2, radius * 2);
 			ctx.rotate(-angle);
 
-			const hpDisplayWidth = radius * 2 * 1.5 * (HP / maxHP);
-			if (hpDisplayWidth <= 0) return;
-			ctx.fillRect(
-				-radius * 1.5,
-				radius * 1.5,
-				hpDisplayWidth,
-				radius * 2 * 0.15
-			);
+			hpDisplay(ctx, radius, maxHP, HP);
+			xpDisplay(ctx, radius, stats.xp, stats.level);
 			ctx.resetTransform();
 			ctx.closePath();
 		},
@@ -26,7 +38,7 @@ export const avatarsList = {
 	circle: {
 		color: 'lightgreen',
 		owner: null,
-		draw: (ctx, origin, radius, angle, maxHP, HP) => {
+		draw: (ctx, origin, radius, angle, maxHP, HP, stats) => {
 			ctx.fillStyle = avatarsList.circle.color;
 			ctx.beginPath();
 
@@ -34,14 +46,8 @@ export const avatarsList = {
 			ctx.arc(0, 0, radius, 0, Math.PI * 2);
 			ctx.fill();
 
-			const hpDisplayWidth = radius * 2 * 1.5 * (HP / maxHP);
-			if (hpDisplayWidth <= 0) return;
-			ctx.fillRect(
-				-radius * 1.5,
-				radius * 1.5,
-				hpDisplayWidth,
-				radius * 2 * 0.15
-			);
+			hpDisplay(ctx, radius, maxHP, HP);
+			xpDisplay(ctx, radius, stats.xp, stats.level);
 			ctx.resetTransform();
 			ctx.closePath();
 		},
@@ -50,7 +56,7 @@ export const avatarsList = {
 		color: 'gold',
 		owner: null,
 		nbSides: 3,
-		draw: (ctx, origin, radius, angle, maxHP, HP) => {
+		draw: (ctx, origin, radius, angle, maxHP, HP, stats) => {
 			const alpha = (2 * Math.PI) / avatarsList.triangle.nbSides;
 			ctx.fillStyle = avatarsList.triangle.color;
 			ctx.beginPath();
@@ -64,14 +70,8 @@ export const avatarsList = {
 			ctx.rotate(-angle);
 			ctx.fill();
 
-			const hpDisplayWidth = radius * 2 * 1.5 * (HP / maxHP);
-			if (hpDisplayWidth <= 0) return;
-			ctx.fillRect(
-				-radius * 1.5,
-				radius * 1.5,
-				hpDisplayWidth,
-				radius * 2 * 0.15
-			);
+			hpDisplay(ctx, radius, maxHP, HP);
+			xpDisplay(ctx, radius, stats.xp, stats.level);
 			ctx.resetTransform();
 			ctx.closePath();
 		},
@@ -80,7 +80,7 @@ export const avatarsList = {
 		color: 'lightpink',
 		owner: null,
 		nbSides: 5,
-		draw: (ctx, origin, radius, angle, maxHP, HP) => {
+		draw: (ctx, origin, radius, angle, maxHP, HP, stats) => {
 			const aplha = (2 * Math.PI) / avatarsList.pentagon.nbSides;
 			ctx.fillStyle = avatarsList.pentagon.color;
 			ctx.beginPath();
@@ -94,14 +94,8 @@ export const avatarsList = {
 			ctx.rotate(-angle);
 			ctx.fill();
 
-			const hpDisplayWidth = radius * 2 * 1.5 * (HP / maxHP);
-			if (hpDisplayWidth <= 0) return;
-			ctx.fillRect(
-				-radius * 1.5,
-				radius * 1.5,
-				hpDisplayWidth,
-				radius * 2 * 0.15
-			);
+			hpDisplay(ctx, radius, maxHP, HP);
+			xpDisplay(ctx, radius, stats.xp, stats.level);
 			ctx.resetTransform();
 			ctx.closePath();
 		},
@@ -283,20 +277,13 @@ export const bulletsList = {
 export const monsters = {
 	color: 'orangered',
 	monster: {
-		draw: (ctx, origin, radius, maxHP, HP) => {
+		draw: (ctx, origin, radius, maxHP, HP, stats) => {
 			ctx.fillStyle = monsters.color;
 			ctx.beginPath();
 
 			ctx.translate(origin.x, origin.y);
 			ctx.fillRect(-radius, -radius, radius * 2, radius * 2);
-			const hpDisplayWidth = radius * 2 * 1.5 * (HP / maxHP);
-			if (hpDisplayWidth <= 0) return;
-			ctx.fillRect(
-				-radius * 1.5,
-				radius * 1.5,
-				hpDisplayWidth,
-				radius * 2 * 0.15
-			);
+			hpDisplay(ctx, radius, maxHP, HP);
 			ctx.resetTransform();
 			ctx.closePath();
 		},

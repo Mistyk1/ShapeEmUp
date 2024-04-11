@@ -33,7 +33,10 @@ export class WaitingRoomView extends View {
 				ctx,
 				{ x: canvas.width / 2, y: canvas.height / 2 },
 				50,
-				-Math.PI / 2
+				-Math.PI / 2,
+				0,
+				0,
+				{ xp: { amount: 0, toLevelUp: 0 }, level: 0 }
 			);
 		});
 

@@ -98,6 +98,7 @@ class GameArea {
 				type: entity.type,
 				maxHP: entity.maxHP,
 				HP: entity.HP,
+				stats: entity.type == 'player' ? entity.stats : {},
 				owner: entity.owner.name,
 			};
 		});
