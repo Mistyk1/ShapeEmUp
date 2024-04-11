@@ -5,21 +5,26 @@ import { Action } from './action/Action.js';
 import { weaponType } from '../weapons/WeaponType.js';
 import { weaponList } from '../weapons/WeaponList.js';
 import { Weapon } from '../weapons/Weapon.js';
-import { WeaponEntity } from './WeaponEntity.js';
 
 export class PlayerEntity extends LivingEntity {
 	direction = new Vector2(0, 0);
 	shootDirection = new Vector2(0, 0);
 	cursorPosition = new Vector2(0, 0);
 	move_vector = new Vector2(0, 0);
-	player_speed = 20;
-	cooldown = 0;
+	stats = {
+		speed: 20,
+		regen: { amount: 0, cooldown: 100 },
+		xp: { amount: 0, toLevelUp: 100 },
+		level: 1,
+		shoot_cooldown: 0,
+	};
 	weapons = {
 		active1: weaponList.null,
 		active2: weaponList.null,
 		passive: weaponList.null,
 		ultimate: weaponList.null,
 	};
+	items = [];
 	mouseState = { z: false, q: false, s: false, d: false, space: false };
 	accel = 400;
 
@@ -107,12 +112,12 @@ export class PlayerEntity extends LivingEntity {
 				element.update();
 			}
 		});
-		this.cooldown -= 1;
+		this.apply_stats();
 		this.move(gameArea.delta, gameArea.friction);
 		this.apply_impulse_vector(this.move_vector);
 		super.update();
 
-		if (this.cooldown <= 0) {
+		if (this.stats.shoot_cooldown <= 0) {
 			if (this.mouseState.left) {
 				this.shoot(0);
 			} else if (this.mouseState.right) {
@@ -148,7 +153,7 @@ export class PlayerEntity extends LivingEntity {
 		} else {
 			this.move_vector.add(this.direction.multiply(this.accel * delta));
 			this.move_vector = this.move_vector.limit_distance(
-				this.speedMult * this.player_speed
+				this.speedMult * this.stats.speed
 			);
 		}
 	}
@@ -196,5 +201,22 @@ export class PlayerEntity extends LivingEntity {
 				entity.die();
 			}
 		});
+	}
+
+	apply_stats() {
+		this.stats.shoot_cooldown -= 1;
+		this.stats.regen.cooldown -= 1;
+		console.log(`HP: ${this.HP}`);
+		console.log(`Regen: ${this.stats.regen.amount}`);
+		console.log(`Cooldown: ${this.stats.regen.cooldown}`);
+		if (this.stats.regen.cooldown <= 0) {
+			this.HP = Math.min(this.HP + this.stats.regen.amount, this.maxHP);
+			this.stats.regen.cooldown = 100;
+		}
+		if (this.stats.xp.amount >= this.stats.xp.toLevelUp) {
+			this.stats.xp.amount -= this.stats.xp.toLevelUp;
+			this.stats.xp.toLevelUp += 100;
+			this.stats.level += 1;
+		}
 	}
 }
