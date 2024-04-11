@@ -5,6 +5,7 @@ import { Action } from './action/Action.js';
 import { weaponType } from '../weapons/WeaponType.js';
 import { weaponList } from '../weapons/WeaponList.js';
 import { Weapon } from '../weapons/Weapon.js';
+import { Item } from '../items/Item.js';
 
 export class PlayerEntity extends LivingEntity {
 	direction = new Vector2(0, 0);
@@ -35,8 +36,10 @@ export class PlayerEntity extends LivingEntity {
 		this.hitbox.addMask(
 			'weapon',
 			new Action('pickWeapon', (source, target) => {
+				Object.values(source.weapons).forEach(w => {
+					if (w.id == target.weapon.id) return;
+				});
 				if (target.weapon.type == weaponType.active) {
-					console.log('pick up active');
 					if (source.weapons.active1 == weaponList.null) {
 						source.weapons.active1 = new Weapon(target.weapon, source);
 						target.die();
@@ -48,7 +51,6 @@ export class PlayerEntity extends LivingEntity {
 					source.weapons.passive == weaponList.null &&
 					target.weapon.type == weaponType.passive
 				) {
-					console.log('pick up passive');
 					source.weapons.passive = new Weapon(target.weapon, source);
 					target.die();
 					source.shoot_passive();
@@ -56,7 +58,6 @@ export class PlayerEntity extends LivingEntity {
 					source.weapons.ultimate == weaponList.null &&
 					target.weapon.type == weaponType.ultimate
 				) {
-					console.log('pick up ultimate');
 					source.weapons.ultimate = new Weapon(target.weapon, source);
 					target.die();
 				}
@@ -65,19 +66,20 @@ export class PlayerEntity extends LivingEntity {
 
 		this.weapons.active1 = new Weapon(
 			{
-				type: weaponList.gun.type,
-				cooldown: weaponList.gun.cooldown,
+				id: weaponList.normal.gun.id,
+				type: weaponList.normal.gun.type,
+				cooldown: weaponList.normal.gun.cooldown,
 				bullet: {
-					radius: weaponList.gun.bullet.radius,
-					speedMult: weaponList.gun.bullet.speedMult,
+					radius: weaponList.normal.gun.bullet.radius,
+					speedMult: weaponList.normal.gun.bullet.speedMult,
 					friendly: true,
-					damage: weaponList.gun.bullet.damage,
-					knockback_speed: weaponList.gun.bullet.knockback_speed,
-					penetration: weaponList.gun.bullet.penetration,
-					ttl: weaponList.gun.bullet.ttl,
-					texture: weaponList.gun.bullet.texture,
+					damage: weaponList.normal.gun.bullet.damage,
+					knockback_speed: weaponList.normal.gun.bullet.knockback_speed,
+					penetration: weaponList.normal.gun.bullet.penetration,
+					ttl: weaponList.normal.gun.bullet.ttl,
+					texture: weaponList.normal.gun.bullet.texture,
 				},
-				texture: weaponList.gun.texture,
+				texture: weaponList.normal.gun.texture,
 			},
 			this
 		);
@@ -111,6 +113,9 @@ export class PlayerEntity extends LivingEntity {
 			if (element != weaponList.null) {
 				element.update();
 			}
+		});
+		this.items.forEach(item => {
+			item.update();
 		});
 		this.apply_stats();
 		this.move(gameArea.delta, gameArea.friction);
@@ -195,6 +200,9 @@ export class PlayerEntity extends LivingEntity {
 	}
 
 	die() {
+		this.items.forEach(item => {
+			item.on_death();
+		});
 		super.die();
 		gameArea.entities.forEach((entity, index) => {
 			if (entity.owner.name == this.name) {
@@ -206,9 +214,6 @@ export class PlayerEntity extends LivingEntity {
 	apply_stats() {
 		this.stats.shoot_cooldown -= 1;
 		this.stats.regen.cooldown -= 1;
-		console.log(`HP: ${this.HP}`);
-		console.log(`Regen: ${this.stats.regen.amount}`);
-		console.log(`Cooldown: ${this.stats.regen.cooldown}`);
 		if (this.stats.regen.cooldown <= 0) {
 			this.HP = Math.min(this.HP + this.stats.regen.amount, this.maxHP);
 			this.stats.regen.cooldown = 100;
@@ -218,5 +223,19 @@ export class PlayerEntity extends LivingEntity {
 			this.stats.xp.toLevelUp += 100;
 			this.stats.level += 1;
 		}
+	}
+
+	equip_item(item) {
+		if (this.items.length >= 4) {
+			return;
+		}
+		this.items.forEach(equippedItem => {
+			if (equippedItem.id == item.id) {
+				return;
+			}
+		});
+		const equippedItem = new Item(item, this);
+		this.items.push(equippedItem);
+		equippedItem.on_equip();
 	}
 }

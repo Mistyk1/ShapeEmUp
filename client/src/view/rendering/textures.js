@@ -182,6 +182,19 @@ export const weapons = {
 			ctx.closePath();
 		},
 	},
+	superZone: {
+		draw: (ctx, origin, radius) => {
+			ctx.strokeStyle = weapons.color;
+			ctx.lineWidth = 0.2 * radius;
+
+			ctx.beginPath();
+			ctx.translate(origin.x, origin.y);
+			ctx.arc(0, 0, radius, 0, Math.PI * 2);
+			ctx.stroke();
+			ctx.resetTransform();
+			ctx.closePath();
+		},
+	},
 };
 
 export const bulletsList = {
@@ -248,6 +261,19 @@ export const bulletsList = {
 				ctx.lineTo(radius * Math.cos(i * angle), radius * Math.sin(i * angle));
 			}
 			ctx.fill();
+			ctx.resetTransform();
+			ctx.closePath();
+		},
+	},
+	superZone_bullet: {
+		draw: (ctx, origin, radius, color) => {
+			ctx.strokeStyle = color;
+			ctx.lineWidth = 0.04 * radius;
+
+			ctx.beginPath();
+
+			ctx.arc(origin.x, origin.y, radius, 0, Math.PI * 2);
+			ctx.stroke();
 			ctx.resetTransform();
 			ctx.closePath();
 		},

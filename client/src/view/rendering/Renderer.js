@@ -16,12 +16,12 @@ export class Renderer {
 	static set_canvas(canvas) {
 		this.canvas = canvas;
 		this.context = this.canvas.getContext('2d');
-		/* const canvasResizeObserver = new ResizeObserver(resampleCanvas.bind(this));
+		const canvasResizeObserver = new ResizeObserver(resampleCanvas.bind(this));
 		canvasResizeObserver.observe(this.canvas);
 		function resampleCanvas() {
 			this.canvas.width = this.canvas.clientWidth;
 			this.canvas.height = this.canvas.clientHeight;
-		} */
+		}
 	}
 
 	static start_rendering() {
