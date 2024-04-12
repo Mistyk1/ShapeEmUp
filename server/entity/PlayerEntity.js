@@ -89,8 +89,6 @@ export class PlayerEntity extends LivingEntity {
 			this
 		);
 
-		this.equip_item(itemList.prism);
-
 		this.socket = socket;
 		if (this.socket != undefined) {
 			this.socket.on('disconnect', () => {
