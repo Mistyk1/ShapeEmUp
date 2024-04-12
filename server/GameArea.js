@@ -1,10 +1,11 @@
-import { difficulty } from './Difficulty.js';
+import { difficulties } from './Difficulty.js';
 import fs from 'fs';
 import { Vector2 } from './math/Vector2.js';
 
 class GameArea {
 	maxSize = new Vector2(3000, 1800);
-	difficulty = difficulty.normal;
+	defaultDifficulty = 'normal';
+	difficulty = difficulties[this.defaultDifficulty];
 	scoreTab = [];
 	entities = [];
 	delta = 16 / 1000;

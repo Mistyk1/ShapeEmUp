@@ -1,5 +1,11 @@
-export const difficulty = {
-	easy: 1,
-	normal: 2,
-	hard: 3,
+export const difficulties = {
+	easy: {
+		level: 1,
+	},
+	normal: {
+		level: 2,
+	},
+	hard: {
+		level: 3,
+	},
 };
