@@ -18,7 +18,10 @@ export class MonsterEntity extends LivingEntity {
 		this.hitbox.addMask(
 			'player',
 			new Action('hurtplayer', (source, target) => {
-				if (target.hurt(gameArea.difficulty)) {
+				target.items.forEach(item => {
+					item.on_hit({ source: source, damage: gameArea.difficulty * 10 });
+				});
+				if (target.hurt(gameArea.difficulty * 10)) {
 					this.target_new_player();
 				}
 				target.knockback = source.pos

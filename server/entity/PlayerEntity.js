@@ -6,19 +6,26 @@ import { weaponType } from '../weapons/WeaponType.js';
 import { weaponList } from '../weapons/WeaponList.js';
 import { Weapon } from '../weapons/Weapon.js';
 import { Item } from '../items/Item.js';
+import { itemList } from '../items/ItemList.js';
 
 export class PlayerEntity extends LivingEntity {
+	// Movement
 	direction = new Vector2(0, 0);
 	shootDirection = new Vector2(0, 0);
 	cursorPosition = new Vector2(0, 0);
 	move_vector = new Vector2(0, 0);
+	mouseState = { z: false, q: false, s: false, d: false, space: false };
+	accel = 400;
+	// Stats
+	static #xp = { amount: 0, toLevelUp: 100 };
 	stats = {
 		speed: 20,
 		regen: { amount: 0, cooldown: 100 },
-		xp: { amount: 0, toLevelUp: 100 },
+		xp: PlayerEntity.#xp,
 		level: 1,
 		shoot_cooldown: 0,
 	};
+	// Inventory
 	weapons = {
 		active1: weaponList.null,
 		active2: weaponList.null,
@@ -26,8 +33,6 @@ export class PlayerEntity extends LivingEntity {
 		ultimate: weaponList.null,
 	};
 	items = [];
-	mouseState = { z: false, q: false, s: false, d: false, space: false };
-	accel = 400;
 
 	constructor(datas, socket) {
 		super(datas);
@@ -83,6 +88,8 @@ export class PlayerEntity extends LivingEntity {
 			},
 			this
 		);
+
+		this.equip_item(itemList.prism);
 
 		this.socket = socket;
 		if (this.socket != undefined) {

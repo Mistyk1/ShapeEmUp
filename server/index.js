@@ -153,7 +153,7 @@ function init() {
 				pos: { x: 200, y: 200 },
 				radius: 25,
 				name: socket.handshake.query.nickname,
-				default_hp: 50,
+				default_hp: 500,
 			},
 			socket
 		);

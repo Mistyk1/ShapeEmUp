@@ -34,9 +34,9 @@ export class SpawnerEntity extends Entity {
 			const datas = {
 				pos: { x: this.pos.x, y: this.pos.y },
 				radius: 20 * (randMult / 1.5),
-				default_hp: 25 * randMult,
+				default_hp: 250 * randMult,
 				speedMult: 10 - randMult,
-				damage: 5,
+				damage: 15 * randMult,
 				color: 'red',
 				difficulty: gameArea.difficulty,
 			};
