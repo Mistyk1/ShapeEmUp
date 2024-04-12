@@ -40,11 +40,6 @@ export class WaitingRoomView extends View {
 			);
 		});
 
-		const difficultySlider = this.element.querySelector('.difficulty');
-		difficultySlider.addEventListener('input', event => {
-			Connection.socket.emit('difficulty change', event.target.value);
-		});
-
 		const launchButton = this.element.querySelector('.launch');
 		launchButton.removeEventListener('click', setNavigationToHref);
 		launchButton.addEventListener('click', event => {
@@ -61,25 +56,6 @@ export class WaitingRoomView extends View {
 	}
 
 	static initConnectionToWaitingRoom() {
-		const difficultySlider = document.querySelector('.difficulty');
-		const difficultyDisplay = document.querySelector('.difficulty-display');
-		Connection.socket.on('difficulty update', difficulty => {
-			switch (difficulty) {
-				case '0':
-					difficultyDisplay.innerHTML = 'DIFFICULTY : EASY';
-					break;
-				case '1':
-					difficultyDisplay.innerHTML = 'DIFFICULTY : NORMAL';
-					break;
-				case '2':
-					difficultyDisplay.innerHTML = 'DIFFICULTY : HARD';
-					break;
-				default:
-					break;
-			}
-			difficultySlider.value = difficulty;
-		});
-
 		Connection.socket.on('launch fail', () => console.log('launch fail'));
 		Connection.socket.on('launch success', () => {
 			Router.navigate('/main-game');
@@ -102,5 +78,39 @@ export class WaitingRoomView extends View {
 				}
 			});
 		});
+
+		Connection.socket.on(
+			'getDifficulties-from-server',
+			(difficulties, defaultDifficulty) => {
+				const difficultySlider = document.querySelector('.difficulty');
+				let i = 0;
+				difficultySlider.innerHTML = `
+					<h2 class="difficultyDisplay">${defaultDifficulty}</h2>
+					<form class="difficulty-slider">
+						<div >
+							${Object.keys(difficulties).map(
+								difficulty => `
+										<input type="radio" name="difficulty" id="${difficulty}" value="${difficulty}" ${difficulty == defaultDifficulty ? 'checked' : ''}>
+									`
+							)}
+						</div>
+					</form>
+				`;
+				const difficultyOptions = difficultySlider.querySelectorAll('input');
+				difficultyOptions.forEach(difficulty =>
+					difficulty.addEventListener('input', event => {
+						Connection.socket.emit('difficulty change', event.target.value);
+					})
+				);
+
+				Connection.socket.on('difficulty update', difficultyValue => {
+					difficultyOptions.forEach(difficulty => {
+						difficulty.checked = difficulty.id == difficultyValue;
+					});
+					difficultySlider.querySelector('.difficultyDisplay').innerHTML =
+						difficultyValue;
+				});
+			}
+		);
 	}
 }

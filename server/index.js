@@ -8,6 +8,7 @@ import { WeaponEntity } from './entity/WeaponEntity.js';
 import { weaponList } from './weapons/WeaponList.js';
 import { SpawnerEntity } from './entity/SpawnerEntity.js';
 import { Vector2 } from './math/Vector2.js';
+import { difficulties } from './Difficulty.js';
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -61,6 +62,11 @@ io.on('connection', socket => {
 	console.log(players);
 	socket.emit('avatar selection update', avatarsAssociation);
 	socket.emit('getGameSize-from-server', gameArea.maxSize);
+	socket.emit(
+		'getDifficulties-from-server',
+		difficulties,
+		gameArea.defaultDifficulty
+	);
 
 	socket.on('disconnect', () => {
 		players.removeIf(
@@ -78,9 +84,10 @@ io.on('connection', socket => {
 		console.log(players);
 	});
 
-	socket.on('difficulty change', newDifficulty => {
-		gameArea.difficulty = newDifficulty;
-		io.emit('difficulty update', gameArea.difficulty);
+	socket.on('difficulty change', difficulty => {
+		gameArea.difficulty = difficulties[difficulty];
+		console.log(gameArea.difficulty);
+		io.emit('difficulty update', difficulty);
 	});
 
 	socket.on('launch', () => {
